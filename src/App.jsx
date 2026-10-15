@@ -2,7 +2,18 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import styled from "styled-components";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Search, Menu, X } from "lucide-react";
+import { 
+  Search, 
+  Menu, 
+  X, 
+  Mountain, 
+  Layers, 
+  Volume2, 
+  VolumeX, 
+  BookOpen, 
+  Sparkles, 
+  ArrowLeft 
+} from "lucide-react";
 
 /* ---------- RADAR LOADER ---------- */
 const Radar = styled.div`
@@ -24,8 +35,7 @@ const Radar = styled.div`
     inset: 20px;
     border: 1px dashed #444;
     border-radius: 50%;
-    box-shadow:
-      inset -5px -5px 25px rgba(0, 0, 0, 0.25),
+    box-shadow: inset -5px -5px 25px rgba(0, 0, 0, 0.25),
       inset 5px 5px 35px rgba(0, 0, 0, 0.25);
   }
   .loader::after {
@@ -35,8 +45,7 @@ const Radar = styled.div`
     height: 50px;
     border-radius: 50%;
     border: 1px dashed #444;
-    box-shadow:
-      inset -5px -5px 25px rgba(0, 0, 0, 0.25),
+    box-shadow: inset -5px -5px 25px rgba(0, 0, 0, 0.25),
       inset 5px 5px 35px rgba(0, 0, 0, 0.25);
   }
   .loader span {
@@ -59,9 +68,7 @@ const Radar = styled.div`
     filter: blur(30px) drop-shadow(20px 20px 20px seagreen);
   }
   @keyframes radar81 {
-    to {
-      transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
   }
 `;
 
@@ -75,11 +82,7 @@ const Loader = () => (
 
 /* ---------- PAKISTAN FLAG ---------- */
 const Flag = () => (
-  <svg
-    viewBox="0 0 30 20"
-    className="w-9 h-6 rounded-sm shadow"
-    aria-label="Flag of Pakistan"
-  >
+  <svg viewBox="0 0 30 20" className="w-9 h-6 rounded-sm shadow" aria-label="Flag of Pakistan">
     <rect width="30" height="20" fill="#01411C" />
     <rect width="7.5" height="20" fill="#fff" />
     <circle cx="19.5" cy="10" r="4.6" fill="#fff" />
@@ -91,212 +94,189 @@ const Flag = () => (
   </svg>
 );
 
-/* ---------- DATA FROM LECTURE SLIDES & GEOGRAPHY ---------- */
+/* ---------- ANCIENT CIVILIZATIONS ---------- */
 const CIVILIZATIONS = [
   {
     id: "mehrgarh",
     n: "Mehrgarh Civilization",
     u: "مہر گڑھ",
     c: [29.3817, 67.6181],
-    z: 9,
-    d: "7000 BC - 5500 BC: Oldest civilization of South Asia discovered at the foot of Bolan Pass, Balochistan. Known for mud-brick houses, agriculture (wheat/barley), dentistry (11 drilled teeth found), and Lapis Lazuli beads.",
-    f: [
-      "Era: 7000 BC - 5500 BC",
-      "Location: Bolan Pass, Balochistan",
-      "Early Dentistry: 11 drilled teeth found",
-      "Oldest South Asian Civilisation",
-    ],
+    z: 11,
+    d: "7000 BC - 5500 BC: Oldest civilization of South Asia discovered at the foot of Bolan Pass, Balochistan. Known for mud-brick houses, agriculture (wheat/barley), early dentistry (11 drilled teeth found), and Lapis Lazuli beads.",
+    f: ["Era: 7000 BC - 5500 BC", "Location: Bolan Pass, Balochistan", "Early Dentistry: 11 drilled teeth found", "Oldest South Asian Civilisation"],
   },
   {
     id: "kotdiji",
     n: "Kot Diji",
     u: "کوٹ ڈیجی",
     c: [27.3456, 68.7083],
-    z: 10,
+    z: 12,
     d: "3300 BC - 2600 BC: Located 45 km south of Khairpur, Sindh. Pre-Harappan prosperous community with a citadel (550ft x 350ft), stone foundations, wheel-made decorated pottery, and worship of Mother Goddess.",
-    f: [
-      "Era: 3300 BC - 2600 BC",
-      "Location: Khairpur, Sindh",
-      "Structure: Citadel with defensive wall",
-      "Worship: Mother Goddess of fertility",
-    ],
+    f: ["Era: 3300 BC - 2600 BC", "Location: Khairpur, Sindh", "Structure: Citadel with defensive wall", "Worship: Mother Goddess of fertility"],
   },
   {
     id: "indus_valley",
     n: "Indus Valley (Mohenjo-Daro & Harappa)",
     u: "وادیِ سندھ (موئن جو دڑو و ہڑپہ)",
     c: [27.3294, 68.1386],
-    z: 9,
+    z: 11,
     d: "2600 BC - 1700 BC: Spanning 650,000 sq km across Harappa, Mohenjo-Daro, and Ganweriwala. World famous for urban grid planning, covered street drainage, washrooms in houses, and Priest-King artifacts.",
-    f: [
-      "Era: 2600 BC - 1700 BC",
-      "Coverage: 650,000 sq km",
-      "Feature: Grid town planning & covered drains",
-      "Artifacts: Priest-King & Dancing Girl",
-    ],
+    f: ["Era: 2600 BC - 1700 BC", "Coverage: 650,000 sq km", "Feature: Grid town planning & covered drains", "Artifacts: Priest-King & Dancing Girl"],
   },
   {
     id: "gandhara",
     n: "Gandhara Civilization (Taxila)",
     u: "گندھارا (ٹیکسلا)",
     c: [33.7463, 72.8397],
-    z: 10,
+    z: 12,
     d: "600 BC - 1100 AD: 'Land of Fragrance' centered around Peshawar Valley, Taxila, and Swat. World-famous for Taxila center of learning, Greco-Buddhist art style, stupas, and monasteries.",
-    f: [
-      "Era: 600 BC - 1100 AD",
-      "Meaning: Land of Fragrance",
-      "Key Center: Taxila University & Swat",
-      "Art: Greco-Roman + Buddhist fusion",
-    ],
+    f: ["Era: 600 BC - 1100 AD", "Meaning: Land of Fragrance", "Key Center: Taxila University & Swat", "Art: Greco-Roman + Buddhist fusion"],
   },
 ];
 
-const PROVINCES = [
-  {
-    id: "punjab",
-    n: "Punjab",
-    u: "پنجاب",
-    c: [31.2, 72.7],
-    z: 7,
-    d: "Pakistan's most populous province and agricultural heartland, watered by five rivers.",
-    f: ["Capital: Lahore", "Rivers: Jhelum, Chenab, Ravi, Sutlej"],
-  },
-  {
-    id: "sindh",
-    n: "Sindh",
-    u: "سندھ",
-    c: [26.0, 68.5],
-    z: 7,
-    d: "Southern province along the Indus and the Arabian Sea, home of Karachi, Kot Diji, and Mohenjo-Daro.",
-    f: ["Capital: Karachi", "Coast: Arabian Sea"],
-  },
-  {
-    id: "kp",
-    n: "Khyber Pakhtunkhwa",
-    u: "خیبر پختونخوا",
-    c: [34.5, 72.0],
-    z: 7,
-    d: "North-western province of mountains and valleys on the Afghan border, with historic Gandhara sites.",
-    f: ["Capital: Peshawar", "Border: Afghanistan"],
-  },
-  {
-    id: "balochistan",
-    n: "Balochistan",
-    u: "بلوچستان",
-    c: [28.5, 65.5],
-    z: 6,
-    d: "Largest province by area: dry mountainous region hosting the ancient Mehrgarh civilization.",
-    f: ["Capital: Quetta", "Site: Mehrgarh (Bolan Pass)"],
-  },
-  {
-    id: "gb",
-    n: "Gilgit-Baltistan",
-    u: "گلگت بلتستان",
-    c: [35.8, 74.8],
-    z: 7,
-    d: "Northern region holding peaks of Karakoram, Himalaya and Hindu Kush, including K2.",
-    f: ["Capital: Gilgit", "Home of K2"],
-  },
-  {
-    id: "ajk",
-    n: "Azad Jammu & Kashmir",
-    u: "آزاد جموں و کشمیر",
-    c: [34.0, 73.7],
-    z: 8,
-    d: "Pakistan-administered territory of green valleys along the Jhelum river.",
-    f: ["Capital: Muzaffarabad", "River: Jhelum"],
-  },
-  {
-    id: "ict",
-    n: "Islamabad Capital Territory",
-    u: "اسلام آباد",
-    c: [33.68, 73.05],
-    z: 10,
-    d: "Federal capital territory at the foot of Margalla Hills.",
-    f: ["Capital: Islamabad"],
-  },
-];
-
+/* ---------- 10 MOUNTAIN RANGES ---------- */
 const RANGES = [
   {
     id: "karakoram",
     n: "Karakoram Range",
     u: "قراقرم",
     c: [35.9, 76.2],
-    z: 8,
-    d: "Rugged range holding K2 and several of Pakistan's five 8,000 m peaks.",
-    f: ["Highest: K2, 8,611 m", "Glaciers: Baltoro, Siachen"],
+    z: 9,
+    color: "#f97316",
+    spine: [[36.6, 74.9], [36.3, 75.5], [35.95, 76.2], [35.65, 76.9], [35.4, 77.5]],
+    d: "Home to K2 (8,611 m), the world's 2nd highest peak. Spans Gilgit-Baltistan and contains giant glaciers like Siachen and Baltoro.",
+    f: ["Highest Peak: K2 (8,611 m)", "Region: Gilgit-Baltistan", "Glaciers: Siachen, Baltoro, Biafo"],
+    peaks: [{ n: "K2", h: 8611, c: [35.8825, 76.5133] }, { n: "Broad Peak", h: 8051, c: [35.8117, 76.5675] }],
   },
   {
     id: "himalaya",
-    n: "Himalaya (Western)",
+    n: "Himalayas (Western)",
     u: "ہمالیہ",
     c: [35.0, 74.6],
-    z: 8,
-    d: "The western end of the Himalaya reaches Pakistan in Kashmir and Gilgit-Baltistan.",
-    f: ["Peak: Nanga Parbat, 8,126 m"],
+    z: 9,
+    color: "#38bdf8",
+    spine: [[35.6, 74.3], [35.24, 74.6], [34.8, 74.95], [34.3, 75.4]],
+    d: "The western end of the world-famous Himalayan range enters Pakistan in Kashmir and Gilgit-Baltistan, anchored by Nanga Parbat.",
+    f: ["Highest Peak: Nanga Parbat (8,126 m)", "Known As: Killer Mountain", "Region: AJK & Gilgit-Baltistan"],
+    peaks: [{ n: "Nanga Parbat", h: 8126, c: [35.2371, 74.5893] }],
   },
   {
     id: "hindukush",
-    n: "Hindu Kush",
+    n: "Hindu Kush Range",
     u: "ہندوکش",
     c: [36.1, 71.8],
-    z: 8,
-    d: "Range along the Afghan border, rising above Chitral.",
-    f: ["Highest in Pakistan: Tirich Mir, 7,708 m"],
-  },
-  {
-    id: "saltrange",
-    n: "Salt Range",
-    u: "کوہ نمک",
-    c: [32.7, 72.7],
     z: 9,
-    d: "Hill system in Punjab, famous for Khewra Salt Mine.",
-    f: ["Khewra: world's famous salt mine"],
+    color: "#a78bfa",
+    spine: [[36.75, 72.8], [36.25, 71.85], [35.7, 71.3], [35.25, 70.8]],
+    d: "Major mountain range running along the Afghan border through Chitral and KP, separating Northern Pakistan from Central Asia.",
+    f: ["Highest Peak: Tirich Mir (7,708 m)", "Location: Chitral, KP", "Historic Significance: Khyber Route"],
+    peaks: [{ n: "Tirich Mir", h: 7708, c: [36.2553, 71.8431] }],
   },
   {
     id: "sulaiman",
     n: "Sulaiman Range",
     u: "کوہ سلیمان",
     c: [30.8, 70.1],
-    z: 8,
-    d: "Mountains between Balochistan plateau and Indus plain.",
-    f: ["Peak: Takht-e-Sulaiman, 3,487 m"],
+    z: 9,
+    color: "#facc15",
+    spine: [[32.3, 70.0], [31.6, 69.9], [30.8, 69.9], [30.0, 69.5], [29.6, 69.0]],
+    d: "Extensive range forming the eastern edge of the Iranian Plateau and dividing Balochistan from the Indus plains.",
+    f: ["Highest Peak: Takht-e-Sulaiman (3,487 m)", "Region: Balochistan & Punjab border", "Flora: Pine forests"],
+    peaks: [{ n: "Takht-e-Sulaiman", h: 3487, c: [31.62, 69.9] }],
   },
   {
     id: "kirthar",
     n: "Kirthar Range",
     u: "کیرتھر",
     c: [26.2, 67.3],
-    z: 8,
-    d: "Range along the Sindh-Balochistan border.",
-    f: ["Protected: Kirthar National Park"],
+    z: 9,
+    color: "#fb7185",
+    spine: [[27.4, 67.0], [26.5, 67.1], [25.8, 67.2], [25.3, 66.8]],
+    d: "A dry mountain wall extending southwards along the Sindh and Balochistan border, protecting the Indus valley.",
+    f: ["Highest Peak: Zardak Peak (2,260 m)", "Protected Area: Kirthar National Park", "Region: Sindh / Balochistan"],
+    peaks: [{ n: "Zardak Peak", h: 2260, c: [26.0, 67.12] }],
+  },
+  {
+    id: "saltrange",
+    n: "Salt Range",
+    u: "کوہ نمک",
+    c: [32.7, 72.7],
+    z: 10,
+    color: "#f472b6",
+    spine: [[32.75, 71.6], [32.7, 72.3], [32.7, 73.0], [32.65, 73.5]],
+    d: "A geologically rich hill system in northern Punjab containing vast deposits of rock salt, including the world-famous Khewra Mine.",
+    f: ["Highest Peak: Sakesar (1,522 m)", "Famous Mine: Khewra Salt Mine", "Region: Punjab (Jhelum/Chakwal)"],
+    peaks: [{ n: "Sakesar", h: 1522, c: [32.53, 71.91] }],
   },
   {
     id: "margalla",
     n: "Margalla Hills",
     u: "مارگلہ",
     c: [33.75, 73.05],
-    z: 11,
-    d: "Hills north of Islamabad with national park trails.",
-    f: ["Highest: Tilla Charouni, 1,604 m"],
+    z: 12,
+    color: "#4ade80",
+    spine: [[33.74, 72.88], [33.75, 73.05], [33.78, 73.22]],
+    d: "Hill range forming the foothills of the Himalayas, located directly north of Islamabad and protected as a National Park.",
+    f: ["Highest Peak: Tilla Charouni (1,604 m)", "Location: Islamabad Capital Territory", "Status: National Park"],
+    peaks: [{ n: "Tilla Charouni", h: 1604, c: [33.77, 73.1] }],
   },
   {
-    id: "makran",
-    n: "Makran Coastal Range",
-    u: "مکران",
-    c: [25.8, 63.6],
-    z: 8,
-    d: "Dry coastal range of Balochistan along the Arabian Sea.",
-    f: ["Region: Makran coast"],
+    id: "safedkoh",
+    n: "Safed Koh (Spin Ghar) Range",
+    u: "سفید کوہ (سپین غر)",
+    c: [33.9, 70.2],
+    z: 10,
+    color: "#e2e8f0",
+    spine: [[34.1, 69.8], [34.05, 70.4], [33.95, 71.0]],
+    d: "Mountain range along the Pakistan-Afghanistan border south of the Kabul River, historically guarding the Khyber Pass.",
+    f: ["Highest Peak: Mount Sikaram (4,755 m)", "Location: Kurram / Khyber Agency", "Key Feature: Khyber Pass"],
+    peaks: [{ n: "Mount Sikaram", h: 4755, c: [34.0, 70.1] }],
+  },
+  {
+    id: "chagai",
+    n: "Chagai Hills",
+    u: "چاغی",
+    c: [28.8, 64.2],
+    z: 9,
+    color: "#fb923c",
+    spine: [[29.3, 62.8], [29.0, 63.8], [28.8, 64.6]],
+    d: "Dry granite mountain range in northwestern Balochistan near the Afghan border, historically famous for Pakistan's nuclear tests.",
+    f: ["Highest Point: Koh-i-Sultan", "Location: Chagai, Balochistan", "Historic Event: Youm-e-Takbir (1998)"],
+    peaks: [],
+  },
+  {
+    id: "raskoh",
+    n: "Ras Koh Range",
+    u: "راس کوہ",
+    c: [28.5, 65.2],
+    z: 9,
+    color: "#2dd4bf",
+    spine: [[28.9, 64.9], [28.6, 65.3], [28.3, 65.7]],
+    d: "A granite mountain range in Balochistan separating the Chagai desert from the Kharan basin.",
+    f: ["Meaning: Gateway Hills", "Highest Peak: Ras Koh Peak (3,003 m)", "Region: Kharan / Chagai, Balochistan"],
+    peaks: [{ n: "Ras Koh Peak", h: 3003, c: [28.6, 65.3] }],
   },
 ];
 
-const LOCAL = [
-  ...CIVILIZATIONS.map((c) => ({ ...c, kind: "Ancient Civilization" })),
-  ...PROVINCES.map((p) => ({ ...p, kind: "Province" })),
-  ...RANGES.map((r) => ({ ...r, kind: "Mountain range" })),
+const PROVINCES = [
+  { id: "punjab", n: "Punjab", u: "پنجاب", c: [31.2, 72.7], z: 7, d: "Pakistan's most populous province and agricultural heartland, watered by five rivers.", f: ["Capital: Lahore", "Rivers: Jhelum, Chenab, Ravi, Sutlej"] },
+  { id: "sindh", n: "Sindh", u: "سندھ", c: [26.0, 68.5], z: 7, d: "Southern province along the Indus and the Arabian Sea, home of Karachi, Kot Diji, and Mohenjo-Daro.", f: ["Capital: Karachi", "Coast: Arabian Sea"] },
+  { id: "kp", n: "Khyber Pakhtunkhwa", u: "خیبر پختونخوا", c: [34.5, 72.0], z: 7, d: "North-western province of mountains and valleys on the Afghan border, with historic Gandhara sites.", f: ["Capital: Peshawar", "Border: Afghanistan"] },
+  { id: "balochistan", n: "Balochistan", u: "بلوچستان", c: [28.5, 65.5], z: 6, d: "Largest province by area: dry mountainous region hosting the ancient Mehrgarh civilization.", f: ["Capital: Quetta", "Site: Mehrgarh (Bolan Pass)"] },
+  { id: "gb", n: "Gilgit-Baltistan", u: "گلگت بلتستان", c: [35.8, 74.8], z: 7, d: "Northern region holding peaks of Karakoram, Himalaya and Hindu Kush, including K2.", f: ["Capital: Gilgit", "Home of K2"] },
+  { id: "ajk", n: "Azad Jammu & Kashmir", u: "آزاد جموں و کشمیر", c: [34.0, 73.7], z: 8, d: "Pakistan-administered territory of green valleys along the Jhelum river.", f: ["Capital: Muzaffarabad", "River: Jhelum"] },
+  { id: "ict", n: "Islamabad Capital Territory", u: "اسلام آباد", c: [33.68, 73.05], z: 10, d: "Federal capital territory at the foot of Margalla Hills.", f: ["Capital: Islamabad"] },
 ];
+
+const KIND = { ranges: "Mountain Range", civilizations: "Ancient Civilization", provinces: "Province" };
+
+const LOCAL = [
+  ...CIVILIZATIONS.map((c) => ({ ...c, kind: KIND.civilizations })),
+  ...RANGES.map((r) => ({ ...r, kind: KIND.ranges })),
+  ...PROVINCES.map((p) => ({ ...p, kind: KIND.provinces })),
+];
+
+const PEAKS = RANGES.flatMap((r) => r.peaks.map((p) => ({ ...p, range: r })));
 
 const PK_BOUNDS = [
   [23.5, 60.8],
@@ -304,9 +284,10 @@ const PK_BOUNDS = [
 ];
 
 const MAP_TYPES = [
-  ["hybrid", "Satellite"],
-  ["terrain", "Terrain"],
-  ["roadmap", "Map"],
+  ["google_satellite", "Google Satellite"],
+  ["google_hybrid", "Google Hybrid"],
+  ["google_terrain", "Google Terrain"],
+  ["google_roadmap", "Google Maps"],
 ];
 
 const PIN = L.divIcon({
@@ -316,7 +297,9 @@ const PIN = L.divIcon({
   iconAnchor: [10, 10],
 });
 
-/* ---------- APP COMPONENT ---------- */
+const rangeBounds = (r) => L.latLngBounds(r.spine);
+
+/* ---------- MAIN APP COMPONENT ---------- */
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -324,15 +307,22 @@ export default function App() {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(null);
   const [msg, setMsg] = useState("");
-  const [mapType, setMapType] = useState("hybrid");
+  const [mapType, setMapType] = useState("google_hybrid");
+  const [showRanges, setShowRanges] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const boxRef = useRef(null);
   const mapRef = useRef(null);
   const tilesRef = useRef(null);
   const markerRef = useRef(null);
+  const rangeLayersRef = useRef({});
+  const peakLayerRef = useRef(null);
+  const labelLayerRef = useRef(null);
+  const pickRef = useRef(() => {});
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 2500);
+    const t = setTimeout(() => setLoading(false), 2200);
     return () => clearTimeout(t);
   }, []);
 
@@ -342,13 +332,29 @@ export default function App() {
     return () => clearTimeout(t);
   }, [msg]);
 
-  /* Initialize Map */
+  /* TEXT TO SPEECH NARRATOR ENGINE */
+  const toggleAudio = (text) => {
+    if (!('speechSynthesis' in window)) return;
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  /* Initialize Map Engine with DIRECT GOOGLE MAPS TILE SERVERS */
   useEffect(() => {
     if (loading || !boxRef.current) return;
     const map = L.map(boxRef.current, {
       zoomControl: false,
       minZoom: 5,
-      maxZoom: 16,
+      maxZoom: 18,
       zoomSnap: 1,
       maxBounds: [
         [18, 55],
@@ -358,34 +364,85 @@ export default function App() {
     });
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
-    map.fitBounds(PK_BOUNDS, {
-      paddingTopLeft: [10, 70],
-      paddingBottomRight: [10, 10],
-    });
+    map.fitBounds(PK_BOUNDS, { paddingTopLeft: [10, 70], paddingBottomRight: [10, 10] });
 
-    const esri = (p) =>
-      `https://server.arcgisonline.com/ArcGIS/rest/services/${p}/MapServer/tile/{z}/{y}/{x}`;
-
+    // Official Direct Google Maps Tile Engines
     tilesRef.current = {
-      hybrid: L.layerGroup([
-        L.tileLayer(esri("World_Imagery"), {
-          maxZoom: 16,
-          attribution: "Imagery &copy; Esri",
-        }),
-        L.tileLayer(esri("Reference/World_Boundaries_and_Places"), {
-          maxZoom: 16,
-        }),
-      ]),
-      terrain: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-        maxZoom: 16,
-        attribution:
-          "&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)",
+      google_satellite: L.tileLayer("https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google Maps Satellite",
       }),
-      roadmap: L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 16,
-        attribution: "&copy; OpenStreetMap contributors",
+      google_hybrid: L.tileLayer("https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google Maps Hybrid",
+      }),
+      google_terrain: L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google Maps Terrain",
+      }),
+      google_roadmap: L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+        maxZoom: 20,
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        attribution: "&copy; Google Maps",
       }),
     };
+
+    /* Range layers setup */
+    const rangeGroup = L.layerGroup();
+    const layers = {};
+    RANGES.forEach((r) => {
+      const common = { lineCap: "round", lineJoin: "round", smoothFactor: 1.5 };
+      const glow = L.polyline(r.spine, { ...common, color: r.color, weight: 26, opacity: 0.14 });
+      const mid = L.polyline(r.spine, { ...common, color: r.color, weight: 12, opacity: 0.3 });
+      const line = L.polyline(r.spine, {
+        ...common,
+        color: r.color,
+        weight: 2.5,
+        opacity: 0.95,
+        dashArray: "1 7",
+      });
+      const group = L.featureGroup([glow, mid, line]);
+      group.on("click", () => pickRef.current({ ...r, kind: KIND.ranges }));
+      group.on("mouseover", () => mid.setStyle({ opacity: 0.5 }));
+      group.on("mouseout", () => layers[r.id] && styleRange(r.id, false));
+      group.bindTooltip(`${r.n}`, { sticky: true, className: "pk-tip" });
+      layers[r.id] = { glow, mid, line, group };
+    });
+    rangeLayersRef.current = layers;
+    rangeLayersRef.current.__group = rangeGroup;
+
+    /* Range labels */
+    const labels = L.layerGroup();
+    RANGES.forEach((r) => {
+      const mid = r.spine[Math.floor(r.spine.length / 2)];
+      L.marker(mid, {
+        interactive: false,
+        keyboard: false,
+        icon: L.divIcon({
+          className: "",
+          html: `<div class="pk-label" style="color:${r.color}">${r.n.replace(" Range", "")}</div>`,
+          iconSize: [0, 0],
+        }),
+      }).addTo(labels);
+    });
+    labelLayerRef.current = labels;
+
+    /* Peak markers */
+    const peaks = L.layerGroup();
+    PEAKS.forEach((p) => {
+      const icon = L.divIcon({
+        className: "",
+        iconSize: [0, 0],
+        html: `<div class="pk-peak"><svg viewBox="0 0 24 20" width="20" height="17"><path d="M12 1 L23 19 H1 Z" fill="${p.range.color}" stroke="#0f172a" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 1 L16 8 L12 6.5 L8 8 Z" fill="#fff"/></svg><span>${p.n} <b>${p.h.toLocaleString()} m</b></span></div>`,
+      });
+      L.marker(p.c, { icon, keyboard: false })
+        .on("click", () => pickRef.current({ ...p.range, kind: KIND.ranges }))
+        .addTo(peaks);
+    });
+    peakLayerRef.current = peaks;
 
     mapRef.current = map;
 
@@ -393,10 +450,13 @@ export default function App() {
       map.remove();
       mapRef.current = null;
       markerRef.current = null;
+      rangeLayersRef.current = {};
+      peakLayerRef.current = null;
+      labelLayerRef.current = null;
     };
   }, [loading]);
 
-  /* Switch Map Tile Layer */
+  /* Switch Google Map Tiles */
   useEffect(() => {
     const map = mapRef.current,
       tiles = tilesRef.current;
@@ -405,33 +465,89 @@ export default function App() {
     tiles[mapType].addTo(map);
   }, [mapType, loading]);
 
-  /* Add Marker Pin */
+  /* Toggle Range Belts Layer */
+  useEffect(() => {
+    const map = mapRef.current;
+    const layers = rangeLayersRef.current;
+    const lab = labelLayerRef.current;
+    const peaks = peakLayerRef.current;
+    if (!map) return;
+
+    if (showRanges) {
+      Object.values(layers).forEach((l) => l.group && map.addLayer(l.group));
+      if (map.getZoom() <= 10) lab?.addTo(map);
+      if (map.getZoom() >= 7) peaks?.addTo(map);
+    } else {
+      Object.values(layers).forEach((l) => l.group && map.removeLayer(l.group));
+      lab && map.removeLayer(lab);
+      peaks && map.removeLayer(peaks);
+    }
+  }, [showRanges, loading]);
+
+  const styleRange = (id, active) => {
+    const l = rangeLayersRef.current[id];
+    if (!l) return;
+    l.glow.setStyle({ weight: active ? 40 : 26, opacity: active ? 0.28 : 0.14 });
+    l.mid.setStyle({ weight: active ? 18 : 12, opacity: active ? 0.55 : 0.3 });
+    l.line.setStyle({ weight: active ? 3.5 : 2.5, dashArray: active ? null : "1 7" });
+  };
+
+  /* Selected pin + range highlighting */
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     markerRef.current?.remove();
-    markerRef.current = sel
-      ? L.marker(sel.c, { icon: PIN, keyboard: false }).addTo(map)
-      : null;
-  }, [sel]);
+    markerRef.current = null;
+
+    if (sel?.spine) {
+      setShowRanges(true);
+    }
+
+    RANGES.forEach((r) => styleRange(r.id, sel?.id === r.id));
+    if (sel && !sel.spine) {
+      markerRef.current = L.marker(sel.c, { icon: PIN, keyboard: false }).addTo(map);
+    }
+  }, [sel, loading]);
 
   const matches = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return s
-      ? LOCAL.filter(
-          (d) => d.n.toLowerCase().includes(s) || d.u.includes(s),
-        ).slice(0, 6)
-      : [];
+    if (!s) return [];
+    const local = LOCAL.filter((d) => d.n.toLowerCase().includes(s) || d.u.includes(s));
+    const peaks = PEAKS.filter((p) => p.n.toLowerCase().includes(s)).map((p) => ({
+      id: `peak-${p.n}`,
+      n: p.n,
+      u: "",
+      kind: "Peak",
+      c: p.c,
+      z: 11,
+      d: `${p.n} (${p.h.toLocaleString()} m) is part of the ${p.range.n}.`,
+      f: [`Height: ${p.h.toLocaleString()} m`, `Range: ${p.range.n}`],
+    }));
+    return [...local, ...peaks].slice(0, 6);
   }, [q]);
 
   const pick = (item) => {
     setSel(item);
     setMenuOpen(false);
     setQ("");
-    mapRef.current?.flyTo(item.c, item.z, { duration: 1.8 });
+    if (isSpeaking) window.speechSynthesis.cancel();
+    const map = mapRef.current;
+    if (!map) return;
+    if (item.spine) {
+      setShowRanges(true);
+      map.flyToBounds(rangeBounds(item), {
+        maxZoom: item.z,
+        padding: [90, 90],
+        duration: 1.8,
+      });
+    } else {
+      map.flyTo(item.c, item.z, { duration: 1.8 });
+    }
   };
+  pickRef.current = pick;
 
   const closeCard = () => {
+    if (isSpeaking) window.speechSynthesis.cancel();
     setSel(null);
     mapRef.current?.flyToBounds(PK_BOUNDS, {
       duration: 1.5,
@@ -447,8 +563,7 @@ export default function App() {
     try {
       const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=pk&limit=1&accept-language=en&q=${encodeURIComponent(s)}`;
       const res = await (await fetch(url)).json();
-      if (!res.length)
-        return setMsg("No place found in Pakistan. Try another search.");
+      if (!res.length) return setMsg("No place found in Pakistan.");
       const r = res[0],
         [s0, n0, w0, e0] = r.boundingbox.map(Number);
       setSel({
@@ -464,11 +579,11 @@ export default function App() {
           [s0, w0],
           [n0, e0],
         ],
-        { maxZoom: 13, duration: 1.8 },
+        { maxZoom: 13, duration: 1.8 }
       );
       setQ("");
     } catch {
-      setMsg("Search failed. Check your connection.");
+      setMsg("Search failed.");
     }
   };
 
@@ -478,10 +593,10 @@ export default function App() {
         <Loader />
         <div className="text-center">
           <h2 className="text-emerald-400 font-extrabold text-xl tracking-wider">
-            PAKISTANPEDIA
+            CIVILIZATIONS OF PAKISTAN
           </h2>
           <p className="text-slate-400 text-xs mt-1 animate-pulse">
-            Scanning ancient civilizations & geography...
+            Connecting Google Satellite Engine & Historical Archives...
           </p>
         </div>
       </div>
@@ -489,21 +604,18 @@ export default function App() {
   }
 
   const glass = "bg-slate-900/80 backdrop-blur-xl border border-slate-700/60";
+  const selRange = sel?.spine ? sel : null;
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">
       <div ref={boxRef} className="absolute inset-0 z-0 bg-slate-950" />
 
-      {/* TOP BAR */}
+      {/* TOP HEADER BAR */}
       <header className="absolute top-0 inset-x-0 z-10 p-3 flex items-start gap-3 pointer-events-none">
         <div className="flex-1 basis-0 min-w-0 flex">
-          <div
-            className={`pointer-events-auto flex items-center gap-2.5 rounded-2xl pl-3 pr-3 sm:pr-4 py-2 ${glass}`}
-          >
+          <div className={`pointer-events-auto flex items-center gap-2.5 rounded-2xl pl-3 pr-3 sm:pr-4 py-2 ${glass}`}>
             <Flag />
-            <span className="hidden sm:block font-bold tracking-tight text-white">
-              Pakistan
-            </span>
+            <span className="hidden sm:block font-bold tracking-tight text-white">Civilizations of Pakistan</span>
           </div>
         </div>
 
@@ -520,7 +632,7 @@ export default function App() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search Mehrgarh, Kot Diji, Taxila, Punjab..."
+              placeholder="Search Mehrgarh, Taxila, Karakoram..."
               className={`w-full rounded-2xl pl-10 pr-3 py-3 text-sm outline-none focus:border-emerald-500 placeholder:text-slate-400 text-white ${glass}`}
             />
           </form>
@@ -533,19 +645,14 @@ export default function App() {
                   className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-left hover:bg-slate-800"
                 >
                   <span>
-                    {m.n}{" "}
-                    <span className="text-xs text-emerald-400 font-mono">
-                      [{m.kind}]
-                    </span>
+                    {m.n} <span className="text-xs text-emerald-400 font-mono">[{m.kind}]</span>
                   </span>
                   <span className="text-xs text-slate-400" dir="rtl">
                     {m.u}
                   </span>
                 </button>
               ))}
-              {msg && (
-                <p className="px-4 py-2.5 text-sm text-amber-300">{msg}</p>
-              )}
+              {msg && <p className="px-4 py-2.5 text-sm text-amber-300">{msg}</p>}
             </div>
           )}
         </div>
@@ -558,11 +665,7 @@ export default function App() {
             aria-expanded={menuOpen}
             className={`pointer-events-auto w-11 h-11 rounded-2xl flex items-center justify-center hover:bg-slate-800 transition ${glass}`}
           >
-            {menuOpen ? (
-              <X className="w-5 h-5 text-emerald-400" />
-            ) : (
-              <Menu className="w-5 h-5 text-emerald-400" />
-            )}
+            {menuOpen ? <X className="w-5 h-5 text-emerald-400" /> : <Menu className="w-5 h-5 text-emerald-400" />}
           </button>
         </div>
       </header>
@@ -575,8 +678,8 @@ export default function App() {
           <div className="flex border-b border-slate-700/60">
             {[
               ["civilizations", "Ancient Civilizations"],
+              ["ranges", "10 Mountain Ranges"],
               ["provinces", "Provinces"],
-              ["ranges", "Mountain Ranges"],
             ].map(([id, label]) => (
               <button
                 key={id}
@@ -593,30 +696,20 @@ export default function App() {
           </div>
 
           <ul className="max-h-[60vh] overflow-y-auto py-1">
-            {(tab === "civilizations"
-              ? CIVILIZATIONS
-              : tab === "provinces"
-                ? PROVINCES
-                : RANGES
-            ).map((it) => (
+            {(tab === "ranges" ? RANGES : tab === "civilizations" ? CIVILIZATIONS : PROVINCES).map((it) => (
               <li key={it.id}>
                 <button
-                  onClick={() =>
-                    pick({
-                      ...it,
-                      kind:
-                        tab === "civilizations"
-                          ? "Ancient Civilization"
-                          : tab === "provinces"
-                            ? "Province"
-                            : "Mountain range",
-                    })
-                  }
-                  className={`w-full flex items-center justify-between px-4 py-3 text-sm text-left hover:bg-slate-800 ${
-                    sel?.id === it.id ? "text-emerald-400" : ""
+                  onClick={() => pick({ ...it, kind: KIND[tab] })}
+                  className={`w-full flex items-center justify-between gap-2 px-4 py-3 text-sm text-left hover:bg-slate-800 ${
+                    sel?.id === it.id ? "text-emerald-400 font-bold" : ""
                   }`}
                 >
-                  <span>{it.n}</span>
+                  <span className="flex items-center gap-2.5">
+                    {it.color && (
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: it.color }} />
+                    )}
+                    {it.n}
+                  </span>
                   <span className="text-slate-400" dir="rtl">
                     {it.u}
                   </span>
@@ -627,80 +720,174 @@ export default function App() {
         </nav>
       )}
 
-      {/* MAP TYPE SWITCHER */}
-      <div
-        className={`absolute top-[4.25rem] left-3 z-10 flex rounded-xl overflow-hidden text-xs font-semibold ${glass}`}
-      >
-        {MAP_TYPES.map(([id, label]) => (
+      {/* LEFT CONTROLS: GOOGLE MAPS LAYERS */}
+      <div className="absolute top-[4.25rem] left-3 z-10 flex flex-col gap-2 items-start">
+        <div className={`flex rounded-xl overflow-hidden text-xs font-semibold ${glass}`}>
+          {MAP_TYPES.map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setMapType(id)}
+              className={`px-3 py-2 transition ${
+                mapType === id ? "bg-emerald-500 text-slate-950 font-bold" : "hover:bg-slate-800 text-slate-300"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => setShowRanges((v) => !v)}
+          className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition ${glass} ${
+            showRanges
+              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/60 shadow-lg shadow-emerald-500/10"
+              : "text-slate-300 hover:text-white"
+          }`}
+        >
+          <Mountain className="w-4 h-4" />
+          {showRanges ? "Hide Mountain Ranges" : "Show Mountain Ranges"}
+        </button>
+
+        {showRanges && (
           <button
-            key={id}
-            onClick={() => setMapType(id)}
-            className={`px-3 py-2 transition ${
-              mapType === id
-                ? "bg-emerald-500 text-slate-950 font-bold"
-                : "hover:bg-slate-800 text-slate-300"
-            }`}
+            onClick={() => setLegendOpen((v) => !v)}
+            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition ${glass}`}
           >
-            {label}
+            <Layers className="w-4 h-4" />
+            Legend
           </button>
-        ))}
+        )}
+
+        {showRanges && legendOpen && (
+          <ul className={`rounded-xl p-2.5 text-[11px] space-y-1.5 animate-drop ${glass} bg-slate-900/95`}>
+            {RANGES.map((r) => (
+              <li key={r.id}>
+                <button
+                  onClick={() => pick({ ...r, kind: KIND.ranges })}
+                  className="flex items-center gap-2 hover:text-white text-slate-300"
+                >
+                  <span className="w-6 h-1.5 rounded-full" style={{ background: r.color }} />
+                  {r.n}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      {/* BOTTOM INFO CARD */}
+      {/* RIGHT SLIDE DRAWER */}
       {sel && (
-        <section
-          className={`absolute bottom-4 left-3 right-3 md:right-auto md:w-[420px] z-10 rounded-2xl p-4 animate-drop ${glass} bg-slate-900/95 border border-emerald-500/30`}
+        <aside
+          className={`absolute top-0 right-0 bottom-0 w-full md:w-[440px] z-30 p-6 flex flex-col justify-between overflow-y-auto animate-slide-left ${glass} bg-slate-900/95 shadow-2xl`}
+          style={{ borderLeftColor: (selRange?.color || "#10b981") + "88" }}
         >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs text-emerald-400 font-bold uppercase tracking-wider">
+          <div>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <button
+                onClick={closeCard}
+                className="flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-800/50"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back to Full Map
+              </button>
+              <button onClick={closeCard} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
                 {sel.kind}
-              </p>
-              <h2 className="text-xl font-extrabold leading-tight mt-0.5 text-white">
-                {sel.n}
-              </h2>
-              {sel.u && (
-                <p className="text-emerald-300 text-base mt-0.5" dir="rtl">
-                  {sel.u}
+              </span>
+              <h2 className="text-2xl font-extrabold text-white mt-2">{sel.n}</h2>
+              {sel.u && <p className="text-sm text-emerald-400 font-serif mt-0.5">{sel.u}</p>}
+            </div>
+
+            {/* AUDIO GUIDE PLAYER */}
+            <div className="mt-4 p-3 bg-slate-950/60 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <button
+                onClick={() => toggleAudio(sel.d)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+                  isSpeaking
+                    ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse"
+                    : "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                }`}
+              >
+                {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                <span>{isSpeaking ? "Stop Voice Guide" : "Listen Audio Guide"}</span>
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-5">
+              <div>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-emerald-400" /> Historical Overview
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-3.5 rounded-xl border border-slate-800">
+                  {sel.d}
                 </p>
+              </div>
+
+              {sel.f.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Key Facts & Highlights
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {sel.f.map((f) => (
+                      <span
+                        key={f}
+                        className="text-xs px-3 py-1.5 rounded-xl bg-slate-950/60 border border-slate-800 text-emerald-300"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selRange?.peaks?.length > 0 && (
+                <div className="pt-3 border-t border-slate-800">
+                  <p className="text-xs font-bold text-slate-400 mb-2">Major Peaks in Range</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selRange.peaks.map((p) => (
+                      <button
+                        key={p.n}
+                        onClick={() => mapRef.current?.flyTo(p.c, 11, { duration: 1.5 })}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-xl border bg-slate-950/40 hover:bg-slate-800 transition"
+                        style={{ borderColor: selRange.color + "88", color: selRange.color }}
+                      >
+                        {p.n} · {p.h.toLocaleString()} m
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
-            <button
-              onClick={closeCard}
-              aria-label="Close"
-              className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white shrink-0"
-            >
-              <X className="w-4 h-4" />
-            </button>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed mt-2.5 bg-slate-950/40 p-3 rounded-xl border border-slate-800">
-            {sel.d}
-          </p>
-
-          {sel.f.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {sel.f.map((f) => (
-                <span
-                  key={f}
-                  className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-300"
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
-          )}
-        </section>
+          <button
+            onClick={closeCard}
+            className="mt-6 w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition"
+          >
+            Close Panel & Explore Map
+          </button>
+        </aside>
       )}
 
-      {/* CUSTOM CSS */}
+      {/* CUSTOM CSS & ANIMATIONS */}
       <style>{`
         .leaflet-container { background: #020617; font-family: inherit; }
-        .pk-pin { display: block; width: 20px; height: 20px; border-radius: 50%; background: #10b981; border: 3px solid #fff; box-shadow: 0 0 0 0 #10b981; animation: pkpulse 1.6s infinite; }
-        @keyframes pkpulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,.8); } 100% { box-shadow: 0 0 0 16px rgba(16,185,129,0); } }
+        .pk-pin { display: block; width: 22px; height: 22px; border-radius: 50%; background: #10b981; border: 3px solid #fff; box-shadow: 0 0 0 0 #10b981; animation: pkpulse 1.6s infinite; }
+        @keyframes pkpulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,.8); } 100% { box-shadow: 0 0 0 18px rgba(16,185,129,0); } }
+        
+        @keyframes slideLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .animate-slide-left { animation: slideLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-drop { animation: drop .25s ease-out; }
         @keyframes drop { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
-        @media (prefers-reduced-motion: reduce) { .animate-drop, .pk-pin { animation: none; } }
+
+        .pk-label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-shadow: 0 0 4px #000, 0 0 8px #000, 0 1px 2px #000; pointer-events: none; }
+        .pk-peak { position: absolute; transform: translate(-10px, -16px); display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 0 3px #000, 0 0 6px #000; cursor: pointer; }
+        .pk-tip { background: rgba(15,23,42,.92); color: #fff; border: 1px solid #334155; border-radius: 8px; font-weight: 700; font-size: 12px; }
       `}</style>
     </div>
   );
