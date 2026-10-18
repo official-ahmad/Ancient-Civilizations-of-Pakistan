@@ -12,7 +12,11 @@ import {
   Lock,
   RotateCcw,
 } from "lucide-react";
-import { EDIT_PIN } from "../config";
+// import { EDIT_PIN } from "../config";
+
+  // process.env.REACT_APP_EDIT_PIN || process.env.NEXT_PUBLIC_EDIT_PIN;
+  // DetailDrawer.jsx (Line 17 par)
+const EDIT_PIN = import.meta.env.VITE_EDIT_PIN || "1234";
 import toast from "react-hot-toast";
 
 /*
