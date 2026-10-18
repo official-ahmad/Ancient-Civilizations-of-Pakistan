@@ -1,0 +1,209 @@
+/* ===== Leaflet base ===== */
+.leaflet-container {
+  background: #020617;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.leaflet-bar {
+  border: 1px solid #334155 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+.leaflet-bar a {
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+  border-bottom: 1px solid #334155;
+}
+.leaflet-bar a:hover {
+  background: #1e293b;
+  color: #fff;
+}
+.leaflet-control-attribution {
+  background: rgba(2, 6, 23, 0.7) !important;
+  color: #94a3b8 !important;
+  font-size: 10px;
+}
+.leaflet-control-attribution a {
+  color: #94a3b8 !important;
+}
+.leaflet-interactive:focus {
+  outline: none;
+}
+
+/* phones: pinch to zoom, so hide +/- and shrink attribution */
+@media (max-width: 767px) {
+  .leaflet-control-zoom {
+    display: none;
+  }
+  .leaflet-control-attribution {
+    max-width: 60vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* ===== Animations ===== */
+.anim-drop {
+  animation: pkDrop 0.25s ease-out;
+}
+@keyframes pkDrop {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+.drawer-anim {
+  animation: pkSheetUp 0.3s ease-out;
+}
+@keyframes pkSheetUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pkSlideLeft {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: none; }
+}
+@media (min-width: 1024px) {
+  .drawer-anim {
+    animation: pkSlideLeft 0.3s ease-out;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Markers ===== */
+.pk-pin {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 0 #10b981;
+  animation: pkPulse 1.6s infinite;
+}
+@keyframes pkPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+  100% { box-shadow: 0 0 0 18px rgba(16, 185, 129, 0); }
+}
+
+.pk-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 4px #000, 0 0 8px #000, 0 1px 2px #000;
+  pointer-events: none;
+}
+
+.pk-peak {
+  position: absolute;
+  transform: translate(-9px, -14px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 0 3px #000, 0 0 6px #000;
+  cursor: pointer;
+}
+.pk-peak b {
+  font-weight: 500;
+  color: #cbd5e1;
+}
+.pk-peak svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  flex-shrink: 0;
+}
+
+.pk-civ {
+  position: absolute;
+  transform: translate(-8px, -8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fbbf24;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.3);
+  cursor: pointer;
+}
+.pk-civ span {
+  position: absolute;
+  left: 24px;
+  top: -1px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fde68a;
+  text-shadow: 0 0 3px #000, 0 0 6px #000;
+}
+
+.pk-tip {
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: none;
+}
+.pk-tip::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-drop, .drawer-anim, .pk-pin { animation: none; }
+}
+
+/* ===== Expanding search pill (green) ===== */
+.search-pill {
+  display: flex;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 9999px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #047857, #10b981);
+  border: 1px solid rgba(110, 231, 183, 0.45);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+  transition: width 0.3s ease;
+}
+.search-pill:hover,
+.search-pill:focus-within,
+.search-pill.is-open {
+  width: min(270px, calc(100vw - 10rem));
+}
+.search-pill__icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-pill input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  padding-right: 16px;
+}
+.search-pill input::placeholder {
+  color: rgba(209, 250, 229, 0.75);
+}
+.search-results {
+  width: min(320px, calc(100vw - 1.5rem));
+}
