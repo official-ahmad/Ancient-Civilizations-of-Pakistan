@@ -94,6 +94,7 @@ import {
   RIVERS,
   DESERTS,
   CLIMATE_DATA,
+  CLIMATE_ZONES,
   PROVINCES,
   TABS,
   TAB_KIND,
@@ -111,7 +112,7 @@ export default function MenuDrawer({ glass, tab, setTab, sel, pick }) {
       case "deserts":
         return DESERTS;
       case "climate":
-        return CLIMATE_DATA;
+        return [...CLIMATE_ZONES, ...CLIMATE_DATA];
       case "provinces":
         return PROVINCES;
       default:

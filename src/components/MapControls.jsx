@@ -143,7 +143,14 @@ import {
   Layers,
   ChevronDown,
 } from "lucide-react";
-import { MAP_TYPES, RANGES, RIVERS, DESERTS, KIND } from "../data/mapData";
+import {
+  MAP_TYPES,
+  RANGES,
+  RIVERS,
+  DESERTS,
+  CLIMATE_ZONES,
+  KIND,
+} from "../data/mapData";
 
 const TONES = {
   emerald: "bg-emerald-500/20 text-emerald-300 border-emerald-500/60",
@@ -179,11 +186,13 @@ export default function MapControls({
   setShowDeserts,
   showCiv,
   setShowCiv,
+  showClimate,
+  setShowClimate,
   pick,
 }) {
   const [open, setOpen] = useState(false); // phones only
   const [legendOpen, setLegendOpen] = useState(false);
-  const anyOn = showRanges || showRivers || showDeserts;
+  const anyOn = showRanges || showRivers || showDeserts || showClimate;
 
   return (
     <div className="absolute top-[4.5rem] left-2.5 sm:left-3 z-10 flex flex-col gap-2 items-start max-w-[calc(100vw-1.25rem)]">
@@ -254,6 +263,14 @@ export default function MapControls({
           label="Deserts"
           tone="amber"
         />
+        <Toggle
+          glass={glass}
+          on={showClimate}
+          onClick={() => setShowClimate((v) => !v)}
+          Icon={Layers}
+          label="Climate Zones"
+          tone="cyan"
+        />
 
         {anyOn && (
           <button
@@ -290,6 +307,14 @@ export default function MapControls({
                 title="Deserts"
                 items={DESERTS}
                 kind={KIND.deserts}
+                pick={pick}
+              />
+            )}
+            {showClimate && (
+              <LegendGroup
+                title="Climatic Zones"
+                items={CLIMATE_ZONES}
+                kind={KIND.climate}
                 pick={pick}
               />
             )}

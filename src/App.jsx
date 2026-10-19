@@ -11,6 +11,7 @@ import {
   RIVERS,
   DESERTS,
   CLIMATE_DATA,
+  CLIMATE_ZONES,
   KIND,
   LOCAL,
   PEAKS,
@@ -102,6 +103,7 @@ export default function App() {
   const [showRivers, setShowRivers] = useState(false);
   const [showDeserts, setShowDeserts] = useState(false);
   const [showCiv, setShowCiv] = useState(false);
+  const [showClimate, setShowClimate] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const { border, approx } = usePakistanBorder();
@@ -289,6 +291,30 @@ export default function App() {
       dL[d.id] = poly;
     });
 
+    /* CLIMATE ZONES */
+    const climateGroup = L.layerGroup();
+    const climateLayers = {};
+    CLIMATE_ZONES.forEach((zone) => {
+      const polygon = L.polygon(zone.polygon, {
+        pane: "deserts",
+        color: zone.color,
+        weight: 2,
+        dashArray: zone.style === "dotted" ? "1 6" : "6 4",
+        fillColor: zone.color,
+        fillOpacity: zone.style === "dotted" ? 0.08 : 0.2,
+      });
+      polygon
+        .bindTooltip(zone.n, { sticky: true, className: "pk-tip" })
+        .on("click", () => pickRef.current({ ...zone, kind: KIND.climate }))
+        .addTo(climateGroup);
+      L.marker(zone.c, {
+        icon: labelIcon(zone.n, zone.color),
+        interactive: false,
+        keyboard: false,
+      }).addTo(climateGroup);
+      climateLayers[zone.id] = polygon;
+    });
+
     /* CIVILIZATION MARKERS */
     const civGroup = L.layerGroup();
     CIVILIZATIONS.forEach((c) => {
@@ -326,12 +352,14 @@ export default function App() {
       ranges: rL,
       rivers: rvL,
       deserts: dL,
+      climate: climateLayers,
       groups: {
         ranges: rangeGroup,
         rivers: riverGroup,
         deserts: desertGroup,
         civ: civGroup,
         points: pointGroup,
+        climate: climateGroup,
       },
       sync,
     };
@@ -441,8 +469,9 @@ export default function App() {
     t(R.groups.deserts, showDeserts);
     t(R.groups.civ, showCiv);
     t(R.groups.points, showCiv);
+    t(R.groups.climate, showClimate);
     R.sync();
-  }, [showRanges, showRivers, showDeserts, showCiv, loading]);
+  }, [showRanges, showRivers, showDeserts, showCiv, showClimate, loading]);
 
   /* ---------- HIGHLIGHT SELECTED ITEM ---------- */
   useEffect(() => {
@@ -473,6 +502,13 @@ export default function App() {
       R.deserts[d.id].setStyle({
         weight: sel?.id === d.id ? 3.5 : 2,
         fillOpacity: sel?.id === d.id ? 0.4 : 0.22,
+      }),
+    );
+    CLIMATE_ZONES.forEach((zone) =>
+      R.climate?.[zone.id]?.setStyle({
+        weight: sel?.id === zone.id ? 4 : 2,
+        fillOpacity:
+          sel?.id === zone.id ? 0.38 : zone.style === "dotted" ? 0.08 : 0.2,
       }),
     );
   }, [sel, loading]);
@@ -551,7 +587,10 @@ export default function App() {
       setShowDeserts(true);
       map.flyToBounds(item.bounds, { ...opts, maxZoom: item.z || 9 });
     } else {
-      if (item.kind === KIND.climate) setShowCiv(true);
+      if (item.kind === KIND.climate) {
+        if (item.polygon) setShowClimate(true);
+        else setShowCiv(true);
+      }
       map.flyToBounds(L.latLng(item.c).toBounds(800), {
         ...opts,
         maxZoom: item.z || 10,
@@ -632,6 +671,8 @@ export default function App() {
         setShowDeserts={setShowDeserts}
         showCiv={showCiv}
         setShowCiv={setShowCiv}
+        showClimate={showClimate}
+        setShowClimate={setShowClimate}
         pick={pick}
       />
 

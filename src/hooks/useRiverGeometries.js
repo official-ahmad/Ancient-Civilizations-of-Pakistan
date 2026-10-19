@@ -6,7 +6,6 @@ const RIVER_NAMES = [
   "Chenab River",
   "Ravi River",
   "Sutlej River",
-  "Beas River",
   "Kabul River",
   "Gilgit River",
   "Swat River",
@@ -21,11 +20,14 @@ export default function useRiverGeometries() {
   const [geometries, setGeometries] = useState({});
 
   useEffect(() => {
+    const endpoint = import.meta.env.VITE_OVERPASS_PROXY_URL;
+    if (!endpoint) return undefined;
+
     let cancelled = false;
     const names = RIVER_NAMES.join("|");
     const query = `[out:json][timeout:30];way["waterway"="river"]["name"~"${names}"](23,60,37,78);out geom;`;
 
-    fetch("https://overpass-api.de/api/interpreter", {
+    fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `data=${encodeURIComponent(query)}`,
