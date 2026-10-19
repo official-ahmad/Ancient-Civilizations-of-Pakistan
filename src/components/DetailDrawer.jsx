@@ -110,9 +110,14 @@ export default function DetailDrawer({
 
     const backToOriginal =
       cleanD === (original.d || "").trim() && same(cleanF, originalFacts);
-    onSaveInfo(sel.id, backToOriginal ? null : { d: cleanD, f: cleanF });
-    setEditing(false);
-    toast.success("Information saved successfully");
+    onSaveInfo(sel.id, backToOriginal ? null : { d: cleanD, f: cleanF })
+      .then(() => {
+        setEditing(false);
+        toast.success("Information saved successfully");
+      })
+      .catch(() => {
+        toast.error("Information could not be saved. Please try again.");
+      });
   };
 
   const field =

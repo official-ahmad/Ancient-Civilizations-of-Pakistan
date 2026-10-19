@@ -10,6 +10,7 @@ import {
   RANGES,
   RIVERS,
   DESERTS,
+  CLIMATE_DATA,
   KIND,
   LOCAL,
   PEAKS,
@@ -291,6 +292,22 @@ export default function App() {
         .on("click", () => pickRef.current({ ...c, kind: KIND.civilizations }))
         .addTo(civGroup);
     });
+    const pointGroup = L.layerGroup();
+    [...CIVILIZATIONS, ...CLIMATE_DATA].forEach((item) => {
+      (item.points || []).forEach((point) => {
+        L.circleMarker(point.c, {
+          pane: "border",
+          radius: 5,
+          color: item.color || "#fbbf24",
+          weight: 2,
+          fillColor: item.color || "#fbbf24",
+          fillOpacity: 0.9,
+        })
+          .bindTooltip(point.n, { sticky: true, className: "pk-tip" })
+          .on("click", () => pickRef.current({ ...item, n: point.n, c: point.c }))
+          .addTo(pointGroup);
+      });
+    });
 
     // show peaks / names only at sensible zoom levels
     const sync = () => {
@@ -310,6 +327,7 @@ export default function App() {
         rivers: riverGroup,
         deserts: desertGroup,
         civ: civGroup,
+        points: pointGroup,
       },
       sync,
     };
@@ -382,6 +400,7 @@ export default function App() {
     t(R.groups.rivers, showRivers);
     t(R.groups.deserts, showDeserts);
     t(R.groups.civ, showCiv);
+    t(R.groups.points, showCiv);
     R.sync();
   }, [showRanges, showRivers, showDeserts, showCiv, loading]);
 
@@ -492,6 +511,7 @@ export default function App() {
       setShowDeserts(true);
       map.flyToBounds(item.bounds, { ...opts, maxZoom: item.z || 9 });
     } else {
+      if (item.kind === KIND.climate) setShowCiv(true);
       map.flyToBounds(L.latLng(item.c).toBounds(800), {
         ...opts,
         maxZoom: item.z || 10,

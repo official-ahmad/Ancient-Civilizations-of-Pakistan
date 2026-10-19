@@ -1,5 +1,16 @@
 # React + Vite
 
+## Shared content edits
+
+The detail drawer keeps edits locally when Firebase is not configured. To make
+edits available across browsers and devices, copy `.env.example` to `.env` and
+fill in the Firebase Web App values. The app stores overrides in the
+`contentOverrides` Firestore collection.
+
+Keep the existing PIN gate enabled and configure Firestore rules so only the
+intended editor can write to that collection. Firebase client configuration is
+not a secret; Firestore security rules are the access boundary.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

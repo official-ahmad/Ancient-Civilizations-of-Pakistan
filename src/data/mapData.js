@@ -529,6 +529,9 @@ export const CIVILIZATIONS = [
       "Early Dentistry",
       "Oldest Civilisation",
     ],
+    points: [
+      { n: "Mehrgarh archaeological site", c: [29.3817, 67.6181] },
+    ],
   },
   {
     id: "kotdiji",
@@ -538,6 +541,7 @@ export const CIVILIZATIONS = [
     z: 12,
     d: "3300 BC - 2600 BC: Pre-Harappan site with citadel and wheel-made pottery in Sindh.",
     f: ["Era: 3300-2600 BC", "Location: Khairpur", "Citadel", "Mother Goddess"],
+    points: [{ n: "Kot Diji archaeological site", c: [27.3456, 68.7083] }],
   },
   {
     id: "indus_valley",
@@ -552,6 +556,10 @@ export const CIVILIZATIONS = [
       "Grid Planning",
       "Priest-King",
     ],
+    points: [
+      { n: "Mohenjo-daro", c: [27.3294, 68.1386] },
+      { n: "Harappa", c: [30.6317, 72.8715] },
+    ],
   },
   {
     id: "gandhara",
@@ -561,6 +569,10 @@ export const CIVILIZATIONS = [
     z: 12,
     d: "600 BC - 1100 AD: Famous for Greco-Buddhist art and Taxila learning center.",
     f: ["Era: 600 BC-1100 AD", "Taxila University", "Greco-Buddhist Art"],
+    points: [
+      { n: "Taxila archaeological site", c: [33.7463, 72.8397] },
+      { n: "Sirkap", c: [33.7558, 72.8256] },
+    ],
   },
 ];
 
@@ -924,6 +936,10 @@ export const CLIMATE_DATA = [
     z: 8,
     d: "Monsoon floods submerged 1/3rd of Pakistan, affecting 33 million people.",
     f: ["Affected: 33M People", "1/3rd Submerged", "Damage: $30B+"],
+    points: [
+      { n: "Sindh flood-affected corridor", c: [27.5, 68.2] },
+      { n: "Sukkur flood impact area", c: [27.705, 68.857] },
+    ],
   },
   {
     id: "jacobabad",
@@ -933,6 +949,7 @@ export const CLIMATE_DATA = [
     z: 10,
     d: "One of the hottest places on Earth, regularly crossing 50°C.",
     f: ["Peak: > 52°C", "Location: Sindh"],
+    points: [{ n: "Jacobabad heat hotspot", c: [28.28, 68.43] }],
   },
   {
     id: "smog_lahore",
@@ -942,6 +959,10 @@ export const CLIMATE_DATA = [
     z: 11,
     d: "Annual winter smog with AQI crossing hazardous levels (> 800).",
     f: ["AQI: > 800", "Winter Inversion"],
+    points: [
+      { n: "Lahore urban smog hotspot", c: [31.52, 74.35] },
+      { n: "Ravi corridor", c: [31.57, 74.31] },
+    ],
   },
 ];
 

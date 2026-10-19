@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { PK_BORDER_FALLBACK } from "../data/borderFallback";
 import { polygonsOf } from "../utils/geo";
 
-const CACHE_KEY = "pk-border-v1";
+const CACHE_KEY = "pk-border-v2";
 
 /* Free sources, tried in order. The first good one is cached in the browser. */
 const SOURCES = [
   {
-    url: "https://cdn.jsdelivr.net/gh/johan/world.geo.json@master/countries/PAK.geo.json",
-    pick: (json) => json,
+    url: "https://nominatim.openstreetmap.org/search?q=Pakistan&featuretype=country&format=jsonv2&polygon_geojson=1&polygon_threshold=0.001&limit=1",
+    pick: (json) => json?.[0]?.geojson,
   },
   {
-    url: "https://nominatim.openstreetmap.org/search?q=Pakistan&featuretype=country&format=json&polygon_geojson=1&polygon_threshold=0.01&limit=1",
-    pick: (json) => json?.[0]?.geojson,
+    url: "https://cdn.jsdelivr.net/gh/johan/world.geo.json@master/countries/PAK.geo.json",
+    pick: (json) => json,
   },
 ];
 
