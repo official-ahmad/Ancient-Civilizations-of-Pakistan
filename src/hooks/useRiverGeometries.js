@@ -1,0 +1,58 @@
+import { useEffect, useState } from "react";
+
+const RIVER_NAMES = [
+  "Indus River",
+  "Jhelum River",
+  "Chenab River",
+  "Ravi River",
+  "Sutlej River",
+  "Beas River",
+  "Kabul River",
+  "Gilgit River",
+  "Swat River",
+  "Panjkora River",
+  "Zhob River",
+  "Hub River",
+];
+
+const normalize = (name) => name.toLowerCase().replace(/\s+/g, " ").trim();
+
+export default function useRiverGeometries() {
+  const [geometries, setGeometries] = useState({});
+
+  useEffect(() => {
+    let cancelled = false;
+    const names = RIVER_NAMES.join("|");
+    const query = `[out:json][timeout:30];way["waterway"="river"]["name"~"${names}"](23,60,37,78);out geom;`;
+
+    fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `data=${encodeURIComponent(query)}`,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Overpass request failed: ${response.status}`);
+        return response.json();
+      })
+      .then((json) => {
+        const next = {};
+        json.elements.forEach((element) => {
+          const name = element.tags?.name;
+          if (!name || !element.geometry?.length) return;
+          const key = normalize(name);
+          const points = element.geometry.map(({ lat, lon }) => [lat, lon]);
+          if (!next[key] || points.length > next[key].length) next[key] = points;
+        });
+        if (!cancelled) setGeometries(next);
+      })
+      .catch((error) => {
+        console.error("Unable to load detailed river geometries.", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return geometries;
+}

@@ -21,6 +21,8 @@ import {
 import { chaikin, blob, outsideMask } from "./utils/geo";
 import usePakistanBorder from "./hooks/usePakistanBorder";
 import useInfoOverrides from "./hooks/useInfoOverrides";
+import useRiverGeometries from "./hooks/useRiverGeometries";
+import useSelectedAdminBoundary from "./hooks/useSelectedAdminBoundary";
 
 import Loader from "./components/Loader";
 import Header from "./components/Header";
@@ -104,6 +106,8 @@ export default function App() {
 
   const { border, approx } = usePakistanBorder();
   const { save: saveInfo, merge } = useInfoOverrides();
+  const riverGeometries = useRiverGeometries();
+  const selectedAdminBoundary = useSelectedAdminBoundary(sel);
 
   const boxRef = useRef(null);
   const mapRef = useRef(null);
@@ -261,7 +265,7 @@ export default function App() {
     const riverGroup = L.layerGroup();
     const rvL = {};
     RIVERS.forEach((rv) => {
-      const l = makeLine(rv, "rivers", [14, 6, 2.5]);
+      const l = makeLine(rv, "rivers", [6, 2.5, 1.25]);
       l.group.on("click", () => pickRef.current({ ...rv, kind: KIND.rivers }));
       l.group.addTo(riverGroup);
       rvL[rv.id] = l;
@@ -343,6 +347,22 @@ export default function App() {
     };
   }, [loading]);
 
+  useEffect(() => {
+    const R = reg.current;
+    if (!R.rivers) return;
+    RIVERS.forEach((river) => {
+      const points =
+        riverGeometries[river.n.toLowerCase()] ||
+        riverGeometries[river.n.replace(" River", "").toLowerCase()];
+      const layer = R.rivers[river.id];
+      if (!points || !layer) return;
+      layer.pts = points;
+      layer.glow.setLatLngs(points);
+      layer.mid.setLatLngs(points);
+      layer.line.setLatLngs(points);
+    });
+  }, [riverGeometries]);
+
   /* ---------- PAKISTAN BORDER (thin green line) ---------- */
   useEffect(() => {
     const map = mapRef.current;
@@ -380,6 +400,26 @@ export default function App() {
 
     return () => grp.remove();
   }, [border, approx, loading]);
+
+  /* Highlight the official administrative area containing the selection. */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !selectedAdminBoundary) return undefined;
+    const group = L.layerGroup().addTo(map);
+    L.geoJSON(selectedAdminBoundary, {
+      pane: "border",
+      interactive: false,
+      style: {
+        color: "#86efac",
+        weight: 2,
+        opacity: 0.95,
+        dashArray: "7 5",
+        fillColor: "#22c55e",
+        fillOpacity: 0.08,
+      },
+    }).addTo(group);
+    return () => group.remove();
+  }, [selectedAdminBoundary]);
 
   /* ---------- BASE MAP ---------- */
   useEffect(() => {
