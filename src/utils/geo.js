@@ -1,6 +1,6 @@
-/* Small geometry helpers (all points are [lat, lng] unless noted) */
 
-// Smooths a rough polyline into a natural looking curve (keeps start & end)
+
+
 export const chaikin = (pts, iter = 2) => {
   let p = pts;
   for (let k = 0; k < iter; k++) {
@@ -19,7 +19,7 @@ export const chaikin = (pts, iter = 2) => {
   return p;
 };
 
-// Turns a bounding box into an organic blob (used for deserts instead of ugly rectangles)
+
 export const blob = ([[s, w], [n, e]], seed = 1, steps = 44) => {
   const cy = (s + n) / 2;
   const cx = (w + e) / 2;
@@ -33,8 +33,8 @@ export const blob = ([[s, w], [n, e]], seed = 1, steps = 44) => {
   });
 };
 
-// GeoJSON (Feature / FeatureCollection / geometry) -> list of polygons.
-// polygon = [ring, ring...], ring = [[lng, lat], ...]
+
+
 export const polygonsOf = (geo) => {
   const geoms =
     geo?.type === "FeatureCollection"
@@ -53,7 +53,7 @@ export const polygonsOf = (geo) => {
   );
 };
 
-// Big rectangle with Pakistan cut out -> used to softly dim everything outside Pakistan
+
 export const outsideMask = (geo) => {
   const world = [
     [-85, -180],

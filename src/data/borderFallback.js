@@ -1,7 +1,4 @@
-/*
-  Rough outline of Pakistan (lat, lng).
-  Only used while the accurate border is loading or if the internet blocks it.
-*/
+
 const RING = [
   [25.12, 61.75],
   [25.12, 62.3],

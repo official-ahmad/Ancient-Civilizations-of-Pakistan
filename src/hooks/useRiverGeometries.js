@@ -12,6 +12,18 @@ const RIVER_NAMES = [
   "Panjkora River",
   "Zhob River",
   "Hub River",
+  "Kurram River",
+  "Gomal River",
+  "Tochi River",
+  "Hunza River",
+  "Shigar River",
+  "Shyok River",
+  "Astore River",
+  "Dasht River",
+  "Hingol River",
+  "Porali River",
+  "Lora River",
+  "Panjnad River",
 ];
 
 const normalize = (name) => name.toLowerCase().replace(/\s+/g, " ").trim();

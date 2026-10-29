@@ -4,7 +4,7 @@ import { polygonsOf } from "../utils/geo";
 
 const CACHE_KEY = "pk-border-v2";
 
-/* Free sources, tried in order. The first good one is cached in the browser. */
+
 const SOURCES = [
   {
     url: "https://nominatim.openstreetmap.org/search?q=Pakistan&featuretype=country&format=jsonv2&polygon_geojson=1&polygon_threshold=0.001&limit=1",
@@ -33,7 +33,7 @@ export default function usePakistanBorder() {
         const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
         if (isValid(cached)) return done(cached);
       } catch {
-        /* ignore */
+
       }
 
       for (const src of SOURCES) {
@@ -45,11 +45,11 @@ export default function usePakistanBorder() {
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify(geo));
           } catch {
-            /* storage full / blocked */
+
           }
           return done(geo);
         } catch {
-          /* try next source */
+
         }
       }
     })();

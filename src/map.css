@@ -1,4 +1,4 @@
-/* ===== Leaflet base ===== */
+
 .leaflet-container {
   background: #020617;
   font-family: inherit;
@@ -31,7 +31,7 @@
   outline: none;
 }
 
-/* phones: pinch to zoom, so hide +/- and shrink attribution */
+
 @media (max-width: 767px) {
   .leaflet-control-zoom {
     display: none;
@@ -44,7 +44,7 @@
   }
 }
 
-/* ===== Animations ===== */
+
 .anim-drop {
   animation: pkDrop 0.25s ease-out;
 }
@@ -76,7 +76,7 @@
   display: none;
 }
 
-/* ===== Markers ===== */
+
 .pk-pin {
   width: 22px;
   height: 22px;
@@ -159,11 +159,23 @@
   display: none;
 }
 
+.pk-river-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 3px #020617, 0 0 6px #020617;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-drop, .drawer-anim, .pk-pin { animation: none; }
 }
 
-/* ===== Expanding search pill (green) ===== */
+
 .search-pill {
   display: flex;
   align-items: center;

@@ -31,9 +31,9 @@ import MenuDrawer from "./components/MenuDrawer";
 import MapControls from "./components/MapControls";
 import DetailDrawer from "./components/DetailDrawer";
 
-/* ---------- SETTINGS ---------- */
-const BORDER_COLOR = "#22c55e"; // Pakistan border line
-const DIM_OUTSIDE = true; // softly darken everything outside Pakistan (set false to turn off)
+
+const BORDER_COLOR = "#22c55e";
+const DIM_OUTSIDE = true;
 
 const gTile = (lyr, label) =>
   L.tileLayer(`https://{s}.google.com/vt/lyrs=${lyr}&x={x}&y={y}&z={z}`, {
@@ -42,26 +42,26 @@ const gTile = (lyr, label) =>
     attribution: `&copy; ${label}`,
   });
 
-/* ---------- RESPONSIVE PADDING FOR fitBounds / flyToBounds ---------- */
-// no panel open: whole map is free
+
+
 const freeOpts = () =>
   window.innerWidth < 768
     ? { paddingTopLeft: [10, 70], paddingBottomRight: [10, 10] }
     : { paddingTopLeft: [200, 76], paddingBottomRight: [20, 20] };
 
-// detail panel open: keep the target visible in the part of the screen that is still free
+
 const focusOpts = () => {
   const w = window.innerWidth;
   const h = window.innerHeight;
   if (w >= 1024)
-    return { paddingTopLeft: [200, 90], paddingBottomRight: [460, 30] }; // right card
+    return { paddingTopLeft: [200, 90], paddingBottomRight: [460, 30] };
   return {
     paddingTopLeft: [16, 80],
     paddingBottomRight: [16, Math.round(h * 0.52)],
-  }; // bottom sheet
+  };
 };
 
-// Fit the WHOLE of Pakistan in the current screen size
+
 const fitPakistan = (map, animate = false) => {
   map.invalidateSize(false);
   map.setMinZoom(2);
@@ -90,6 +90,13 @@ const civIcon = (text) =>
     html: `<div class="pk-civ"><span>${text}</span></div>`,
   });
 
+const riverLabelIcon = (text) =>
+  L.divIcon({
+    className: "",
+    iconSize: [0, 0],
+    html: `<div class="pk-river-label">${text}</div>`,
+  });
+
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -100,8 +107,8 @@ export default function App() {
   const [mapType, setMapType] = useState("google_hybrid");
 
   const [showRanges, setShowRanges] = useState(false);
-  const [showRivers, setShowRivers] = useState(false);
-  const [showDeserts, setShowDeserts] = useState(false);
+  const [showRivers, setShowRivers] = useState(true);
+  const [showDeserts, setShowDeserts] = useState(true);
   const [showCiv, setShowCiv] = useState(false);
   const [showClimate, setShowClimate] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -115,12 +122,12 @@ export default function App() {
   const mapRef = useRef(null);
   const tilesRef = useRef(null);
   const markerRef = useRef(null);
-  const reg = useRef({}); // all drawn layers
+  const reg = useRef({});
   const pickRef = useRef(() => {});
   const stateRef = useRef({});
   stateRef.current = { showRanges, hasSel: !!sel };
 
-  /* ---------- LOADER / MESSAGES ---------- */
+
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 2200);
     return () => clearTimeout(t);
@@ -132,7 +139,7 @@ export default function App() {
     return () => clearTimeout(t);
   }, [msg]);
 
-  /* ---------- AUDIO GUIDE ---------- */
+
   const stopSpeech = () => {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     setIsSpeaking(false);
@@ -151,7 +158,7 @@ export default function App() {
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
-  /* ---------- CREATE MAP + ALL LAYERS ---------- */
+
   useEffect(() => {
     if (loading || !boxRef.current) return;
 
@@ -174,7 +181,7 @@ export default function App() {
     L.control.zoom({ position: "bottomleft" }).addTo(map);
     L.control.attribution({ position: "bottomleft", prefix: false }).addTo(map);
 
-    // layer order: tiles < mask < deserts < ranges < rivers < border < markers
+
     [
       ["mask", 250],
       ["deserts", 410],
@@ -189,8 +196,8 @@ export default function App() {
 
     fitPakistan(map);
 
-    // keep the whole of Pakistan in view if the container size changes
-    // (stops once the user starts moving the map or a panel is open)
+
+
     let userMoved = false;
     const el = boxRef.current;
     const markMoved = () => {
@@ -213,7 +220,7 @@ export default function App() {
       google_roadmap: gTile("m", "Google Maps"),
     };
 
-    /* glow + body + thin line, so each ridge / river looks smooth */
+
     const makeLine = (item, pane, widths) => {
       const pts = chaikin(item.spine);
       const base = { pane, lineCap: "round", lineJoin: "round" };
@@ -240,13 +247,35 @@ export default function App() {
       return { group, glow, mid, line, color: item.color, w: widths, pts };
     };
 
-    /* RANGES + range names + peaks */
+
     const rangeGroup = L.layerGroup();
     const labelsGroup = L.layerGroup();
     const peaksGroup = L.layerGroup();
     const rL = {};
     RANGES.forEach((r) => {
       const l = makeLine(r, "ranges", [18, 8, 2.5]);
+      const lats = r.spine.map(([lat]) => lat);
+      const lngs = r.spine.map(([, lng]) => lng);
+      const latPad = Math.max((Math.max(...lats) - Math.min(...lats)) * 0.12, 0.08);
+      const lngPad = Math.max((Math.max(...lngs) - Math.min(...lngs)) * 0.12, 0.08);
+      l.area = L.polygon(
+        [
+          [Math.min(...lats) - latPad, Math.min(...lngs) - lngPad],
+          [Math.min(...lats) - latPad, Math.max(...lngs) + lngPad],
+          [Math.max(...lats) + latPad, Math.max(...lngs) + lngPad],
+          [Math.max(...lats) + latPad, Math.min(...lngs) - lngPad],
+        ],
+        {
+          pane: "ranges",
+          color: r.color,
+          weight: 1.5,
+          dashArray: "3 5",
+          fillColor: r.color,
+          fillOpacity: 0.08,
+          interactive: false,
+        },
+      );
+      l.group.addLayer(l.area);
       l.group.on("click", () => pickRef.current({ ...r, kind: KIND.ranges }));
       l.group.addTo(rangeGroup);
       rL[r.id] = l;
@@ -263,17 +292,25 @@ export default function App() {
         .addTo(peaksGroup);
     });
 
-    /* RIVERS */
     const riverGroup = L.layerGroup();
+    const riverLabelsGroup = L.layerGroup();
     const rvL = {};
     RIVERS.forEach((rv) => {
-      const l = makeLine(rv, "rivers", [6, 2.5, 1.25]);
+      const l = makeLine(rv, "rivers", [3.5, 1.8, 1.05]);
+      l.glow.setStyle({ opacity: 0.08 });
+      l.mid.setStyle({ opacity: 0.2 });
+      const label = L.marker(l.pts[Math.floor(l.pts.length / 2)], {
+        icon: riverLabelIcon(rv.n.replace(" River", "")),
+        interactive: false,
+        keyboard: false,
+      }).addTo(riverLabelsGroup);
+      l.label = label;
       l.group.on("click", () => pickRef.current({ ...rv, kind: KIND.rivers }));
       l.group.addTo(riverGroup);
       rvL[rv.id] = l;
     });
 
-    /* DESERTS (soft blobs instead of rectangles) */
+
     const desertGroup = L.layerGroup();
     const dL = {};
     DESERTS.forEach((d, i) => {
@@ -291,7 +328,7 @@ export default function App() {
       dL[d.id] = poly;
     });
 
-    /* CLIMATE ZONES */
+
     const climateGroup = L.layerGroup();
     const climateLayers = {};
     CLIMATE_ZONES.forEach((zone) => {
@@ -315,7 +352,7 @@ export default function App() {
       climateLayers[zone.id] = polygon;
     });
 
-    /* CIVILIZATION MARKERS */
+
     const civGroup = L.layerGroup();
     CIVILIZATIONS.forEach((c) => {
       L.marker(c.c, { icon: civIcon(c.n.split(" (")[0]), keyboard: false })
@@ -339,12 +376,16 @@ export default function App() {
       });
     });
 
-    // show peaks / names only at sensible zoom levels
+
     const sync = () => {
       const z = map.getZoom();
       const on = stateRef.current.showRanges;
       on && z >= 6.5 ? peaksGroup.addTo(map) : map.removeLayer(peaksGroup);
       on && z <= 9.5 ? labelsGroup.addTo(map) : map.removeLayer(labelsGroup);
+      const riversOn = map.hasLayer(riverGroup);
+      riversOn && z <= 10.5
+        ? riverLabelsGroup.addTo(map)
+        : map.removeLayer(riverLabelsGroup);
     };
     map.on("zoomend", sync);
 
@@ -356,6 +397,7 @@ export default function App() {
       groups: {
         ranges: rangeGroup,
         rivers: riverGroup,
+        riverLabels: riverLabelsGroup,
         deserts: desertGroup,
         civ: civGroup,
         points: pointGroup,
@@ -388,16 +430,17 @@ export default function App() {
       layer.glow.setLatLngs(points);
       layer.mid.setLatLngs(points);
       layer.line.setLatLngs(points);
+      layer.label.setLatLng(points[Math.floor(points.length / 2)]);
     });
   }, [riverGeometries]);
 
-  /* ---------- PAKISTAN BORDER (thin green line) ---------- */
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !border) return;
     const grp = L.layerGroup().addTo(map);
 
-    // dim the world outside Pakistan (only when we have the accurate border)
+
     if (DIM_OUTSIDE && !approx) {
       L.polygon(outsideMask(border), {
         pane: "mask",
@@ -408,7 +451,7 @@ export default function App() {
       }).addTo(grp);
     }
 
-    // soft glow + crisp 2px line
+
     L.geoJSON(border, {
       pane: "border",
       interactive: false,
@@ -429,7 +472,7 @@ export default function App() {
     return () => grp.remove();
   }, [border, approx, loading]);
 
-  /* Highlight the official administrative area containing the selection. */
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !selectedAdminBoundary) return undefined;
@@ -449,7 +492,7 @@ export default function App() {
     return () => group.remove();
   }, [selectedAdminBoundary]);
 
-  /* ---------- BASE MAP ---------- */
+
   useEffect(() => {
     const map = mapRef.current;
     const tiles = tilesRef.current;
@@ -458,7 +501,7 @@ export default function App() {
     tiles[mapType].addTo(map).bringToBack();
   }, [mapType, loading]);
 
-  /* ---------- LAYER TOGGLES ---------- */
+
   useEffect(() => {
     const map = mapRef.current;
     const R = reg.current;
@@ -473,7 +516,7 @@ export default function App() {
     R.sync();
   }, [showRanges, showRivers, showDeserts, showCiv, showClimate, loading]);
 
-  /* ---------- HIGHLIGHT SELECTED ITEM ---------- */
+
   useEffect(() => {
     const R = reg.current;
     if (!R.ranges) return;
@@ -496,7 +539,16 @@ export default function App() {
         g.line.bringToFront();
       }
     };
-    RANGES.forEach((r) => hot(R.ranges[r.id], sel?.id === r.id));
+    const selectedRange = sel?.kind === KIND.ranges ? sel.id : null;
+    RANGES.forEach((r) => {
+      const layer = R.ranges[r.id];
+      if (selectedRange && selectedRange !== r.id) {
+        mapRef.current?.removeLayer(layer.group);
+      } else if (showRanges) {
+        layer.group.addTo(mapRef.current);
+      }
+      hot(layer, selectedRange === r.id);
+    });
     RIVERS.forEach((r) => hot(R.rivers[r.id], sel?.id === r.id));
     DESERTS.forEach((d) =>
       R.deserts[d.id].setStyle({
@@ -513,7 +565,7 @@ export default function App() {
     );
   }, [sel, loading]);
 
-  /* ---------- PULSING PIN (places, civilizations, search results) ---------- */
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -526,7 +578,7 @@ export default function App() {
     }
   }, [sel, loading]);
 
-  /* ---------- SEARCH ---------- */
+
   const matches = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (!s) return [];
@@ -569,7 +621,7 @@ export default function App() {
     }
   };
 
-  /* ---------- PICK / CLOSE / PEAK ---------- */
+
   const pick = (item) => {
     setSel(item);
     setMenuOpen(false);
@@ -617,6 +669,15 @@ export default function App() {
 
   const glass = "bg-slate-900/80 backdrop-blur-xl border border-slate-700/60";
   const selRange = sel?.spine && sel.kind === KIND.ranges ? sel : null;
+  const relatedItems = sel
+    ? LOCAL.filter((item) => item.id !== sel.id && item.c)
+        .sort(
+          (a, b) =>
+            Math.hypot(a.c[0] - sel.c[0], a.c[1] - sel.c[1]) -
+            Math.hypot(b.c[0] - sel.c[0], b.c[1] - sel.c[1]),
+        )
+        .slice(0, 4)
+    : [];
 
   return (
     <div
@@ -676,7 +737,7 @@ export default function App() {
         pick={pick}
       />
 
-      {/* show the full Pakistan again */}
+      {}
       <button
         onClick={closeCard}
         aria-label="Show full Pakistan"
@@ -699,6 +760,8 @@ export default function App() {
           toggleAudio={toggleAudio}
           isSpeaking={isSpeaking}
           onPeak={flyToPeak}
+          relatedItems={relatedItems}
+          onSelectRelated={pick}
         />
       )}
     </div>
