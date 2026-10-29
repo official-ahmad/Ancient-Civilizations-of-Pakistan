@@ -600,7 +600,7 @@ export default function DetailDrawer({
               autoComplete="off"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              placeholder="••••"
+              placeholder="••••••••••"
               className="mt-3 w-full rounded-xl bg-slate-950 border border-slate-700 focus:border-emerald-500 outline-none px-3 py-2 text-sm text-white tracking-widest"
             />
             <div className="mt-3 flex gap-2">
