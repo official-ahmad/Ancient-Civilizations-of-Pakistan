@@ -116,11 +116,6 @@ export default function DetailDrawer({
   const cleanImage = draftImage.trim();
   const cleanGallery = draftGallery.map((s) => s.trim()).filter(Boolean);
   const galleryImages = [
-    editing
-      ? draftImage
-      : isPreviewImage(activeImage)
-        ? ""
-        : activeImage,
     ...(editing
       ? draftGallery
       : (sel.gallery || []).filter((url) => !isPreviewImage(url))),
@@ -255,8 +250,31 @@ export default function DetailDrawer({
 
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-5 py-4">
         <section className="mb-5">
+          <div className="mb-4">
+            <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+              Main image
+            </h3>
+            <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40">
+              <img
+                src={(editing ? draftImage : activeImage) || "/images.jpg"}
+                alt={`${sel.n} main`}
+                className="h-32 w-full object-cover sm:h-40"
+                onError={(event) => {
+                  event.currentTarget.src = "/images.jpg";
+                }}
+              />
+            </div>
+            {editing && (
+              <input
+                value={draftImage}
+                onChange={(event) => setDraftImage(event.target.value)}
+                placeholder="Main image URL"
+                className={`${field} mt-2`}
+              />
+            )}
+          </div>
           <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-            More pictures
+            More images
           </h3>
           {editable && !editing && (
             <button
@@ -266,11 +284,12 @@ export default function DetailDrawer({
               Edit pictures and add exact location photos
             </button>
           )}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {galleryImages.map((url) => (
                   <button
                     key={url}
-                    onClick={() => setActiveImage(url)}
+                    type="button"
+                    aria-label={`View ${sel.n} additional image`}
                     className="h-20 overflow-hidden rounded-lg border border-slate-800 hover:border-emerald-400"
                   >
                     <img
@@ -291,12 +310,6 @@ export default function DetailDrawer({
           )}
           {editing && (
             <div className="mt-3 space-y-2 rounded-xl border border-slate-800 bg-slate-950/40 p-3">
-              <input
-                value={draftImage}
-                onChange={(event) => setDraftImage(event.target.value)}
-                placeholder="Main image URL"
-                className={field}
-              />
               {draftGallery.map((url, index) => (
                 <div key={`${url}-${index}`} className="flex gap-2">
                   <input
