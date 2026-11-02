@@ -107,8 +107,8 @@ export default function App() {
   const [mapType, setMapType] = useState("google_hybrid");
 
   const [showRanges, setShowRanges] = useState(false);
-  const [showRivers, setShowRivers] = useState(true);
-  const [showDeserts, setShowDeserts] = useState(true);
+  const [showRivers, setShowRivers] = useState(false);
+  const [showDeserts, setShowDeserts] = useState(false);
   const [showCiv, setShowCiv] = useState(false);
   const [showClimate, setShowClimate] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
