@@ -1239,8 +1239,14 @@ export const DESERTS = [
       [30.5, 70.8],
       [32.5, 71.8],
     ],
-    d: "Located in Punjab between Jhelum and Indus rivers.",
-    f: ["Bhakkar, Layyah", "Sand Dunes"],
+    d: "The Thal Desert is a sandy region of Punjab, bounded by the Salt Range piedmont to the north, the Indus flood plains to the west, and the Jhelum and Chenab flood plains to the east. It is about 190 miles long and up to 70 miles wide, covering parts of Mianwali, Jhang, Bhakkar, Khushab, Layyah, and Muzaffargarh.",
+    f: [
+      "Climate: arid to hyper-arid; annual rainfall may be below 200 mm",
+      "Winter: 3–8°C; summer: 32–40°C",
+      "Main issue: wind erosion and loss of topsoil",
+      "Languages: Saraiki and Urdu",
+      "Tribes: Sial, Tiwana, Baghoor, Mammak, Bhachar, Lashari, Jhammat, Aheer, Jutt, Wagha, Gahi, and Awan",
+    ],
   },
   {
     id: "katpana",
